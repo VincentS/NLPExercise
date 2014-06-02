@@ -1,17 +1,16 @@
-package com.company;
+package com.vs;
 
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class Document {
-    private int id;
+
+    private String id;
     private List<Sentence> sentences;
 
     public Document() {
         sentences = new LinkedList<Sentence>();
-
-
 
     }
 
@@ -19,12 +18,18 @@ public class Document {
         return sentences;
     }
 
-    public void setSentences(List<Sentence> sentences) {
-        this.sentences = sentences;
+
+    public void add(Sentence sentences) {
+        this.sentences.add(sentences);
     }
 
-    public void addSentence(Sentence sentences) {
-        this.sentences.add(sentences);
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
 

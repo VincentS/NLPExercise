@@ -1,4 +1,4 @@
-package com.company;
+package com.vs;
 
 
 
@@ -6,21 +6,18 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.EndElement;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
+import javax.xml.stream.events.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 
 
 public class Parser {
     XMLEventReader eventReader;
 
 
-    public void openStream(String filename) throws XMLStreamException, IOException {
+    public void openStream(String filename)
+            throws XMLStreamException, IOException {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         InputStream in = new FileInputStream(filename);
         eventReader = inputFactory.createXMLEventReader(in);
@@ -36,30 +33,15 @@ public class Parser {
                 StartElement startElement = event.asStartElement();
                 String tagName = startElement.getName().getLocalPart();
                 if (tagName.equals("sentence")) {
-                    d.addSentence(readNextSentence());
+                    d.add(readNextSentence());
+                }
+                if (tagName.equals("PMID")) {
+                    d.setId(getString(event));
                 }
             }
         }
         return d;
     }
-
-    public String getXMLAttribute(StartElement startElement) {
-        Iterator<Attribute> XMLAttribute = startElement.getAttributes();
-        while(XMLAttribute.hasNext()) {
-            Attribute attribute = XMLAttribute.next();
-            if(attribute.getName().toString().equals("tok")) {
-                return attribute.getValue().toString();
-            }
-        }
-
-        return null;
-
-    }
-
-
-
-
-
 
 
     public Document.Sentence readNextSentence() throws XMLStreamException {
@@ -68,14 +50,12 @@ public class Parser {
         while(eventReader.hasNext()) {
             event = eventReader.nextEvent();
             if (event.isStartElement()) {
-                XMLEvent contentEvent = eventReader.nextEvent();
                 StartElement startElement = event.asStartElement();
                 String tagName = startElement.getName().getLocalPart();
-
                 if (tagName.equals("tok")) {
                     Attribute attributes = startElement.getAttributeByName(new QName("cat"));
-                    String XMLAttributeContent = attributes.getValue().toString();
-                    Document.Token token = new Document.Token(contentEvent.asCharacters().getData(),
+                    String XMLAttributeContent = attributes.getValue();
+                    Document.Token token = new Document.Token(getString(event),
                             XMLAttributeContent);
                     Sentence.add(token);
                 }
@@ -91,6 +71,12 @@ public class Parser {
         }
         return Sentence;
 
+    }
+    //TODO Warum muss ich das event mit übergeben und kann dann es in einen anderen Eventtypen casten?!?!?
+    private String getString(XMLEvent event) throws XMLStreamException {
+         event = eventReader.nextEvent();
+        String content = event.asCharacters().getData();
+        return content;
     }
 
 
