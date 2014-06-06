@@ -15,7 +15,7 @@ public class Main {
         Parsing parser = new Parsing(basepath);
         filenames =    parser.BuildLanguageModel(lm);
         CalculatePerplexity calc = new CalculatePerplexity(lm);
-        ComputePerplexity(filenames,calc);
+        calc.getCorpusComplexity(basepath,filenames);
 
 
 
@@ -27,13 +27,17 @@ public class Main {
     public static void  ComputePerplexity(List<String> filenames,CalculatePerplexity calc)
             throws InterruptedException, XMLStreamException, IOException {
         Parser documentparser = new Parser();
+        double overall_complexity = 0;
         for(int i =0;i<filenames.size();i++) {
             Document document = new Document();
             document = documentparser.parseDocument(basepath + filenames.get(i));
+
+            overall_complexity += calc.getDocumentPerplexity(document);
             System.out.print(calc.getDocumentPerplexity(document));
             System.out.print(System.getProperty("line.separator"));
 
 
         }
+        System.out.print(overall_complexity);
     }
 }
