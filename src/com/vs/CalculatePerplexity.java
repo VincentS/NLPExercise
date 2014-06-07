@@ -47,7 +47,8 @@ public class CalculatePerplexity {
 
 
     public double getDocumentPerplexity(Document document) {
-        double document_perplexity = 1.0;
+        double document_perplexity = 0.0;
+        int wordcountdoc = 0;
 
 
         for (Document.Sentence sentence : document.getSentences()) {
@@ -58,15 +59,19 @@ public class CalculatePerplexity {
             for (int i = 0; i < words.size()-1; i++) {
 
                 double bigram_prob = getsmoothedBigramProbability(words.get(i), words.get(i + 1));
-                sentence_perplexity += (Math.log(bigram_prob) / Math.log(2));
+                sentence_perplexity += (Math.log(bigram_prob)/Math.log(2));
+
+
 
             }
-
+            System.out.print("Sentence perpelxity:" + Math.pow(2.0,-(sentence_perplexity/words.size())));
+            System.out.print(System.getProperty("line.separator"));
             document_perplexity += sentence_perplexity;
+            wordcountdoc += words.size();
             wordcount += words.size();
 
         }
-
+        System.out.print("Document Perplexity:" + Math.pow(2.0,-document_perplexity/wordcountdoc));
         return document_perplexity;
 
     }
@@ -75,7 +80,7 @@ public class CalculatePerplexity {
     public void getCorpusComplexity(String basepath, List<String> filenames)
             throws InterruptedException, XMLStreamException, IOException {
         Parser documentparser = new Parser();
-        double overall_complexity = 0;
+        double overall_complexity = 0.0;
         for (int i = 0; i < filenames.size(); i++) {
             Document document = new Document();
             document = documentparser.parseDocument(basepath + filenames.get(i));
@@ -84,6 +89,7 @@ public class CalculatePerplexity {
 
 
         }
+        //overall_complexity= Math.pow(overall_complexity,(1.0/wordcount));
         overall_complexity = overall_complexity/wordcount;
         overall_complexity = Math.pow(2.0, -overall_complexity);
         System.out.print(overall_complexity);
