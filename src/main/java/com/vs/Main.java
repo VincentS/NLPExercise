@@ -10,11 +10,17 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException, XMLStreamException, IOException {
         LanguageModel lm = new LanguageModel();
+        LanguageModelPOS lmPOS = new LanguageModelPOS();
         LinkedList<String> filenames = new LinkedList<String>();
 
+
         Parsing parser = new Parsing(basepath);
-        filenames =    parser.BuildLanguageModel(lm);
+        filenames =    parser.BuildLanguageModel(lm,lmPOS);
+
+
         CalculatePerplexity calc = new CalculatePerplexity(lm);
+        //CalculatePrecision calcprec = new CalculatePrecision(lmPOS);
+        //calcprec.getPrecision(basepath,filenames);
         calc.getCorpusComplexity(basepath,filenames);
 
 

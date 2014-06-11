@@ -42,7 +42,7 @@ public class Parsing {
     }
 
 
-    public LinkedList<String> BuildLanguageModel (LanguageModel lm)
+    public LinkedList<String> BuildLanguageModel (LanguageModel lm,LanguageModelPOS lmPOS)
             throws XMLStreamException, IOException, InterruptedException {
 
 
@@ -57,6 +57,7 @@ public class Parsing {
                 int RandomIndicie = getRandomFile(filenames.size());
                 document = parser.parseDocument(path + "/" + filenames.get(RandomIndicie));
                 lm.addDocument(document);
+                lmPOS.addDocument(document);
                 filenames.remove(RandomIndicie);
 
             }

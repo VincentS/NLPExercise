@@ -4,12 +4,12 @@ package com.vs;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Document {
+public class TestCorpus {
 
     private String id;
     private List<Sentence> sentences;
 
-    public Document() {
+    public TestCorpus() {
         sentences = new LinkedList<Sentence>();
 
     }
@@ -86,6 +86,18 @@ public class Document {
         @Override
         public String toString() {
             return (word + ";" + pos);
+        }
+
+        @Override
+        public int hashCode() { return pos.hashCode(); }
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null) return false;
+            if (!(o instanceof Token)) return false;
+            Token token = (Token) o;
+            return this.pos.equals(token.getPOS());
         }
     }
 
